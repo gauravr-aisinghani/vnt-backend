@@ -54,4 +54,30 @@ router.get('/fetch_all_tshirts',function(req,res){
     })
 })
 
+router.post('/fetch_productinfo',function(req,res){
+  pool.query("select * from product where productid=?",[req.body.productid],function(error,result){
+    if (error) {
+      console.log(error);
+      res.status(500).json({ status: false, message: "server error" });
+    } else {
+      
+      res.status(200).json({ status: true, data: result });
+      
+    }
+  })
+})
+
+router.post('/fetch_related_products',function(req,res){
+  pool.query("select * from product where categoryid=?",[req.body.categoryid],function(error,result){
+    if (error) {
+      console.log(error);
+      res.status(500).json({ status: false, message: "server error" });
+    } else {
+      
+      res.status(200).json({ status: true, data: result });
+      
+    }
+  })
+})
+
 module.exports=router;
