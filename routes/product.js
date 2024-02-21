@@ -80,4 +80,16 @@ router.post('/fetch_related_products',function(req,res){
   })
 })
 
+router.get('/fetch_all_products',function(req,res){
+  pool.query("select * from  product",function(error,result){
+    if (error) {
+      console.log(error);
+      res.status(500).json({ status: false, message: "server error" });
+    } else {
+      
+      res.status(200).json({ status: true, data: result });
+      
+    }
+  })
+})
 module.exports=router;
