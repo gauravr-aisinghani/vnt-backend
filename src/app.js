@@ -24,8 +24,8 @@ import sellerRouter from './routes/seller.routes.js'
 
 //routes declaration
 
-app.use("/users", userRouter)
-app.use("/sellers",sellerRouter)
+app.use("/api/v1/users", userRouter)
+app.use("/api/v1/sellers",sellerRouter)
 
 
 export {app};

@@ -6,7 +6,7 @@ const router = Router()
 
 router.route("/register").post( upload.none(), registerUser)
 
-router.route("/api/getallShirts").get(getAllShirts)
+router.route("/getallShirts").get(getAllShirts)
 
 router.route("/getallTshirts").get(getAllTshirts)
 
