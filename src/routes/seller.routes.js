@@ -1,6 +1,12 @@
 import { Router } from "express";
 import {upload} from "../middlewares/multer.middleware.js"
-import {registerSeller,getAllShirts,getAllTshirts,getAllJeans,getAllJackets} from "../controllers/seller.controller.js"
+import {
+    registerSeller,
+    getAllShirts,
+    getAllTshirts,
+    getAllJeans,
+    getAllJackets
+} from "../controllers/seller.controller.js"
 import {addProduct} from "../controllers/seller.controller.js"
 import {addCategory} from "../controllers/seller.controller.js"
 
