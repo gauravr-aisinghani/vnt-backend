@@ -5,17 +5,18 @@ import {User} from '../models/user.models.js'
 import {Category} from '../models/category.models.js'
 import {Product} from '../models/product.models.js'
 import jwt from 'jsonwebtoken'
-// import {uploadeOnCloudinary} from '../utils/cloudinary.js'
+
 
 const generateAccessAndRefreshTokens = async(userId) => {
     try {
         const user = await User.findById(userId)
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
+        user.refreshToken = refreshToken
         await user.save({validateBeforeSave : false})
         return {accessToken,refreshToken}
     } catch (error) {
-        throw new ApiError(500,error?.message,"Something went wrong while generating refresh and access token")
+        throw new ApiError(500,"Something went wrong while generating refresh and access token")
     }
 }
 
@@ -35,20 +36,6 @@ const registerUser = asyncHandler( async (req,res) =>{
     if(existedUser){
         throw new ApiError(409,"User with mail or username already exists")
     }
-
-    // const avatarLocalPath = req.files?.avatar[0]?.path
-    // const coverImageLocalPath = req.files?.coverImage[0]?.path
-
-    // if(!avatarLocalPath){
-    //     throw new ApiError(400,"Avatar file is required")
-    // }
-
-    // const avatar = await uploadeOnCloudinary(avatarLocalPath)
-    // const coverImage = await uploadeOnCloudinary(coverImageLocalPath)
-
-    // if(!avatar){
-    //     throw new ApiError(400,"Avatar is required")
-    // }
 
     const user = await User.create({
         userName : userName.toLowerCase(),
@@ -171,7 +158,7 @@ const loginUser = asyncHandler( async(req,res) =>{
 
     if(!isPasswordValid){throw new ApiError(401,"Username or Password is Wrong")}
 
-    const {refreshToken,accessToken} = await generateAccessAndRefreshTokens(user._id)
+    const {accessToken,refreshToken} = await generateAccessAndRefreshTokens(user._id)
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
@@ -183,7 +170,7 @@ const loginUser = asyncHandler( async(req,res) =>{
     .json(new ApiResponse(
         200,
         {
-            user:loggedInUser,accessToken,refreshToken
+            user: loggedInUser,accessToken,refreshToken
         },
         "user logged In successfully"
       )
@@ -194,7 +181,7 @@ const loginUser = asyncHandler( async(req,res) =>{
 const logoutUser = asyncHandler( async(req,res) =>{
     await User.findByIdAndUpdate(
         req.user._id,
-        {$set: {refreshToken : 1}},
+        {$unset: {refreshToken : 1}},
         {new: true}
     )
 
@@ -241,7 +228,7 @@ const refreshAccessToken = asyncHandler( async(req,res) =>{
         ))
     }
     catch(error){
-        throw new ApiError(400, error?.message || "Invalid refresh token")
+        throw new ApiError(401, error?.message || "Invalid refresh token")
     }
 })
 
