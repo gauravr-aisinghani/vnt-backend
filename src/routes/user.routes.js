@@ -30,7 +30,7 @@ router.route("/getproductinfo").post(upload.none(),getProductInfo)
 
 router.route("/getrelatedproducts").post(upload.none(),getRelatedProducts)
 
-router.route("/login").post(loginUser)
+router.route("/login").post(upload.none(),loginUser)
 
 //Secured Routes
 
